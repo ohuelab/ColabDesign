@@ -157,7 +157,7 @@ class LayerNorm(hk.LayerNorm):
   def __call__(self, x: jnp.ndarray) -> jnp.ndarray:
     is_bf16 = (x.dtype == jnp.bfloat16)
     if is_bf16:
-      x = x.astype(jnp.float32)
+      x = x.astype(jnp.float64)
 
     param_axis = self.param_axis[0] if self.param_axis else -1
     param_shape = (x.shape[param_axis],)

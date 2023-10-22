@@ -54,7 +54,7 @@ def make_backbone_affine(
   c = residue_constants.atom_order['C']
 
   rigid_mask = (mask[:, a] * mask[:, b] * mask[:, c]).astype(
-      jnp.float32)
+      jnp.float64)
 
   rigid = all_atom_multimer.make_transform_from_reference(
       a_xyz=positions[:, a], b_xyz=positions[:, b], c_xyz=positions[:, c])
@@ -508,7 +508,7 @@ def generate_monomer_rigids(representations: Mapping[str, jnp.ndarray],
   if "initial_atom_pos" in batch:
     atom = residue_constants.atom_order
     atom_pos = batch["initial_atom_pos"]
-    if global_config.bfloat16: atom_pos = atom_pos.astype(jnp.float32)
+    if global_config.bfloat16: atom_pos = atom_pos.astype(jnp.float64)
     atom_pos = geometry.Vec3Array.from_array(atom_pos)
     rigid = all_atom_multimer.make_transform_from_reference(
       a_xyz=atom_pos[:, atom["N"]],
@@ -741,7 +741,7 @@ def structural_violation_loss(mask: jnp.ndarray,
                               ) -> Float:
   """Computes Loss for structural Violations."""
   # Put all violation losses together to one large loss.
-  num_atoms = jnp.sum(mask).astype(jnp.float32) + 1e-6
+  num_atoms = jnp.sum(mask).astype(jnp.float64) + 1e-6
   between_residues = violations['between_residues']
   within_residues = violations['within_residues']
   return (config.structural_violation_loss_weight *
@@ -766,8 +766,8 @@ def find_structural_violations(
   # Compute between residue backbone violations of bonds and angles.
   connection_violations = all_atom_multimer.between_residue_bond_loss(
       pred_atom_positions=pred_positions,
-      pred_atom_mask=mask.astype(jnp.float32),
-      residue_index=residue_index.astype(jnp.float32),
+      pred_atom_mask=mask.astype(jnp.float64),
+      residue_index=residue_index.astype(jnp.float64),
       aatype=aatype,
       tolerance_factor_soft=config.violation_tolerance_factor,
       tolerance_factor_hard=config.violation_tolerance_factor)
@@ -859,8 +859,8 @@ def compute_violation_metrics(
   within_residues = violations['within_residues']
   extreme_ca_ca_violations = all_atom_multimer.extreme_ca_ca_distance_violations(
       positions=pred_positions,
-      mask=mask.astype(jnp.float32),
-      residue_index=residue_index.astype(jnp.float32))
+      mask=mask.astype(jnp.float64),
+      residue_index=residue_index.astype(jnp.float64))
   ret['violations_extreme_ca_ca_distance'] = extreme_ca_ca_violations
   ret['violations_between_residue_bond'] = utils.mask_mean(
       mask=seq_mask,
@@ -886,12 +886,12 @@ def supervised_chi_loss(
     config: ml_collections.ConfigDict) -> Tuple[Float, Float, Float]:
   """Computes loss for direct chi angle supervision."""
   eps = 1e-6
-  chi_mask = target_chi_mask.astype(jnp.float32)
+  chi_mask = target_chi_mask.astype(jnp.float64)
 
   pred_angles = pred_angles[:, :, 3:]
 
   residue_type_one_hot = jax.nn.one_hot(
-      aatype, residue_constants.restype_num + 1, dtype=jnp.float32)[None]
+      aatype, residue_constants.restype_num + 1, dtype=jnp.float64)[None]
   chi_pi_periodic = jnp.einsum('ijk, kl->ijl', residue_type_one_hot,
                                jnp.asarray(residue_constants.chi_pi_periodic))
 
@@ -934,11 +934,11 @@ def get_renamed_chi_angles(aatype: jnp.ndarray,
                            ) -> jnp.ndarray:
   """Return renamed chi angles."""
   chi_angle_is_ambiguous = utils.batched_gather(
-      jnp.array(residue_constants.chi_pi_periodic, dtype=jnp.float32), aatype)
+      jnp.array(residue_constants.chi_pi_periodic, dtype=jnp.float64), aatype)
   alt_chi_angles = chi_angles + np.pi * chi_angle_is_ambiguous
   # Map back to [-pi, pi].
   alt_chi_angles = alt_chi_angles - 2 * np.pi * (alt_chi_angles > np.pi).astype(
-      jnp.float32)
+      jnp.float64)
   alt_is_better = alt_is_better[:, None]
   return (1. - alt_is_better) * chi_angles + alt_is_better * alt_chi_angles
 

@@ -32,7 +32,7 @@ VERSION = '0.1'
 class Rot3Array:
   """Rot3Array Matrix in 3 dimensional Space implemented as struct of arrays."""
 
-  xx: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float32})
+  xx: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
   xy: jnp.ndarray
   xz: jnp.ndarray
   yx: jnp.ndarray
@@ -69,7 +69,7 @@ class Rot3Array:
     return Rot3Array(c0.x, c1.x, c2.x, c0.y, c1.y, c2.y, c0.z, c1.z, c2.z)
 
   @classmethod
-  def identity(cls, shape, dtype=jnp.float32) -> Rot3Array:
+  def identity(cls, shape, dtype=jnp.float64) -> Rot3Array:
     """Returns identity of given shape."""
     ones = jnp.ones(shape, dtype=dtype)
     zeros = jnp.zeros(shape, dtype=dtype)
@@ -140,7 +140,7 @@ class Rot3Array:
     return cls(xx, xy, xz, yx, yy, yz, zx, zy, zz)  # pytype: disable=wrong-arg-count  # trace-all-classes
 
   @classmethod
-  def random_uniform(cls, key, shape, dtype=jnp.float32) -> Rot3Array:
+  def random_uniform(cls, key, shape, dtype=jnp.float64) -> Rot3Array:
     """Samples uniform random Rot3Array according to Haar Measure."""
     quat_array = jax.random.normal(key, tuple(shape) + (4,), dtype=dtype)
     quats = utils.unstack(quat_array)

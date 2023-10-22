@@ -220,7 +220,7 @@ class EmbeddingsAndEvoformer(hk.Module):
       offset = pos[:, None] - pos[None, :]
 
 
-    dtype = jnp.bfloat16 if gc.bfloat16 else jnp.float32
+    dtype = jnp.bfloat16 if gc.bfloat16 else jnp.float64
 
     # add residue index
     if c.pseudo_multimer:
@@ -267,7 +267,7 @@ class EmbeddingsAndEvoformer(hk.Module):
     gc = self.global_config
 
     batch = dict(batch)
-    dtype = jnp.bfloat16 if gc.bfloat16 else jnp.float32
+    dtype = jnp.bfloat16 if gc.bfloat16 else jnp.float64
 
     if safe_key is None:
       safe_key = prng.SafeKey(hk.next_rng_key())
@@ -436,7 +436,7 @@ class EmbeddingsAndEvoformer(hk.Module):
     if not gc.bfloat16_output:
       for k, v in output.items():
         if v.dtype == jnp.bfloat16:
-          output[k] = v.astype(jnp.float32)
+          output[k] = v.astype(jnp.float64)
 
     return output
 
@@ -576,7 +576,7 @@ class SingleTemplateEmbedding(hk.Module):
       # each of the other residues.
       raw_atom_pos = template_batch["template_all_atom_positions"]
       if gc.bfloat16:
-        raw_atom_pos = raw_atom_pos.astype(jnp.float32)
+        raw_atom_pos = raw_atom_pos.astype(jnp.float64)
         
       atom_pos = geometry.Vec3Array.from_array(raw_atom_pos)
       rigid, backbone_mask = folding_multimer.make_backbone_affine(

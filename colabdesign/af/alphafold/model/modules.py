@@ -1183,14 +1183,14 @@ def dgram_from_positions(positions, num_bins, min_bin, max_bin):
 
   lower_breaks = jnp.linspace(min_bin, max_bin, num_bins)
   lower_breaks = jnp.square(lower_breaks)
-  upper_breaks = jnp.concatenate([lower_breaks[1:],jnp.array([1e8], dtype=jnp.float32)], axis=-1)
+  upper_breaks = jnp.concatenate([lower_breaks[1:],jnp.array([1e8], dtype=jnp.float64)], axis=-1)
   dist2 = jnp.sum(
       squared_difference(
           jnp.expand_dims(positions, axis=-2),
           jnp.expand_dims(positions, axis=-3)),
       axis=-1, keepdims=True)
 
-  return ((dist2 > lower_breaks).astype(jnp.float32) * (dist2 < upper_breaks).astype(jnp.float32))
+  return ((dist2 > lower_breaks).astype(jnp.float64) * (dist2 < upper_breaks).astype(jnp.float64))
 
 def dgram_from_positions_soft(positions, num_bins, min_bin, max_bin, temp=2.0):
   '''soft positions to dgram converter'''
@@ -1218,7 +1218,7 @@ def pseudo_beta_fn(aatype, all_atom_positions, all_atom_mask=None):
     return pseudo_beta
   else:
     pseudo_beta_mask = jnp.where(is_gly, all_atom_mask[..., ca_idx], all_atom_mask[..., cb_idx])
-    pseudo_beta_mask = pseudo_beta_mask.astype(jnp.float32)
+    pseudo_beta_mask = pseudo_beta_mask.astype(jnp.float64)
     return pseudo_beta, pseudo_beta_mask
 
 class EvoformerIteration(hk.Module):
@@ -1365,7 +1365,7 @@ class EmbeddingsAndEvoformer(hk.Module):
 
     c = self.config
     gc = self.global_config
-    dtype = jnp.bfloat16 if gc.bfloat16 else jnp.float32
+    dtype = jnp.bfloat16 if gc.bfloat16 else jnp.float64
 
     if safe_key is None:
       safe_key = prng.SafeKey(hk.next_rng_key())
@@ -1568,7 +1568,7 @@ class EmbeddingsAndEvoformer(hk.Module):
     if not gc.bfloat16_output:
       for k, v in output.items():
         if v.dtype == jnp.bfloat16:
-          output[k] = v.astype(jnp.float32)
+          output[k] = v.astype(jnp.float64)
     return output
   
 ####################################################################
@@ -1642,7 +1642,7 @@ class SingleTemplateEmbedding(hk.Module):
       if self.config.use_template_unit_vector:
         raw_atom_pos = template_batch["template_all_atom_positions"]
         if gc.bfloat16:
-          raw_atom_pos = raw_atom_pos.astype(jnp.float32)
+          raw_atom_pos = raw_atom_pos.astype(jnp.float64)
 
         rot, trans = quat_affine.make_transform_from_reference(
             n_xyz=raw_atom_pos[:, n],

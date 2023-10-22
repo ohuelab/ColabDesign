@@ -423,7 +423,7 @@ def generate_affines(representations, batch, config, global_config, safe_key):
     atom = residue_constants.atom_order
     atom_pos = batch["initial_atom_pos"]
     if global_config.bfloat16:
-      atom_pos = atom_pos.astype(jnp.float32)
+      atom_pos = atom_pos.astype(jnp.float64)
     rot, trans = quat_affine.make_transform_from_reference(
         n_xyz=atom_pos[:, atom["N"]],
         ca_xyz=atom_pos[:, atom["CA"]],

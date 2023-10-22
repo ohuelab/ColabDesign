@@ -61,7 +61,7 @@ class Rigid3Array:
     return Rigid3Array(rot, trans)
 
   @classmethod
-  def identity(cls, shape, dtype=jnp.float32) -> Rigid3Array:
+  def identity(cls, shape, dtype=jnp.float64) -> Rigid3Array:
     """Return identity Rigid3Array of given shape."""
     return cls(
         rotation_matrix.Rot3Array.identity(shape, dtype=dtype),

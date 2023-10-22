@@ -29,13 +29,13 @@ import io
 def bfloat16_creator(next_creator, shape, dtype, init, context):
   """Creates float32 variables when bfloat16 is requested."""
   if context.original_dtype == jnp.bfloat16:
-    dtype = jnp.float32
+    dtype = jnp.float64
   return next_creator(shape, dtype, init)
 
 def bfloat16_getter(next_getter, value, context):
   """Casts float32 to bfloat16 when bfloat16 was originally requested."""
   if context.original_dtype == jnp.bfloat16:
-    assert value.dtype == jnp.float32
+    assert value.dtype == jnp.float64
     value = value.astype(jnp.bfloat16)
   return next_getter(value)
 

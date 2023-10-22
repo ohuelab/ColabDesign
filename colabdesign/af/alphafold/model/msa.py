@@ -43,7 +43,7 @@ def gumbel_noise(key: jnp.ndarray, shape: Sequence[int]) -> jnp.ndarray:
   epsilon = 1e-6
   uniform = utils.padding_consistent_rng(jax.random.uniform)
   uniform_noise = uniform(
-      key, shape=shape, dtype=jnp.float32, minval=0., maxval=1.)
+      key, shape=shape, dtype=jnp.float64, minval=0., maxval=1.)
   gumbel = -jnp.log(-jnp.log(uniform_noise + epsilon) + epsilon)
   return gumbel
 
@@ -103,7 +103,7 @@ def make_masked_msa(key, batch, opt=None, epsilon=1e-6):
                profile_prob=0.1, 
                same_prob=0.1)
   
-  random_aa = jnp.array([0.05] * 20 + [0., 0.], dtype=jnp.float32)
+  random_aa = jnp.array([0.05] * 20 + [0., 0.], dtype=jnp.float64)
 
   msa_one_hot = st_one_hot(batch['msa'])
   categorical_probs = (
@@ -150,7 +150,7 @@ def nearest_neighbor_clusters(batch, gap_agreement_weight=0.):
   # agreement because it could be spurious.
   # Never put weight on agreeing on BERT mask.
 
-  weights = jnp.array([1.] * 21 + [gap_agreement_weight] + [0.], dtype=jnp.float32)
+  weights = jnp.array([1.] * 21 + [gap_agreement_weight] + [0.], dtype=jnp.float64)
 
   msa_mask = batch['msa_mask']
   msa_one_hot = st_one_hot(batch['msa'])

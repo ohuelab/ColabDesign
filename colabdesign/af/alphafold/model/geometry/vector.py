@@ -41,7 +41,7 @@ class Vec3Array:
   easier use of vector instructions.
   """
 
-  x: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float32})
+  x: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
   y: jnp.ndarray
   z: jnp.ndarray
 
@@ -100,7 +100,7 @@ class Vec3Array:
     return self / self.norm(epsilon)
 
   @classmethod
-  def zeros(cls, shape, dtype=jnp.float32):
+  def zeros(cls, shape, dtype=jnp.float64):
     """Return Vec3Array corresponding to zeros of given shape."""
     return cls(
         jnp.zeros(shape, dtype), jnp.zeros(shape, dtype),
@@ -212,6 +212,6 @@ def dihedral_angle(a: Vec3Array, b: Vec3Array, c: Vec3Array,
   return jnp.arctan2(c3.dot(v2), v2_mag * c1.dot(c2))
 
 
-def random_gaussian_vector(shape, key, dtype=jnp.float32):
+def random_gaussian_vector(shape, key, dtype=jnp.float64):
   vec_array = jax.random.normal(key, shape + (3,), dtype)
   return Vec3Array.from_array(vec_array)
