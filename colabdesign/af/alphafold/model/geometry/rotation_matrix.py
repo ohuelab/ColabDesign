@@ -33,14 +33,14 @@ class Rot3Array:
   """Rot3Array Matrix in 3 dimensional Space implemented as struct of arrays."""
 
   xx: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
-  xy: jnp.ndarray
-  xz: jnp.ndarray
-  yx: jnp.ndarray
-  yy: jnp.ndarray
-  yz: jnp.ndarray
-  zx: jnp.ndarray
-  zy: jnp.ndarray
-  zz: jnp.ndarray
+  xy: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  xz: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  yx: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  yy: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  yz: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  zx: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  zy: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  zz: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
 
   __array_ufunc__ = None
 

@@ -42,8 +42,8 @@ class Vec3Array:
   """
 
   x: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
-  y: jnp.ndarray
-  z: jnp.ndarray
+  y: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
+  z: jnp.ndarray = dataclasses.field(metadata={'dtype': jnp.float64})
 
   def __post_init__(self):
     if hasattr(self.x, 'dtype'):
