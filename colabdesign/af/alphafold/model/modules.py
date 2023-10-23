@@ -1365,7 +1365,7 @@ class EmbeddingsAndEvoformer(hk.Module):
 
     c = self.config
     gc = self.global_config
-    dtype = jnp.bfloat16 if gc.bfloat16 else jnp.float32
+    dtype = jnp.float64 if gc.bfloat16 else jnp.float32
 
     if safe_key is None:
       safe_key = prng.SafeKey(hk.next_rng_key())
@@ -1568,7 +1568,7 @@ class EmbeddingsAndEvoformer(hk.Module):
     if not gc.bfloat16_output:
       for k, v in output.items():
         if v.dtype == jnp.bfloat16:
-          output[k] = v.astype(jnp.float32)
+          output[k] = v.astype(jnp.float64)
     return output
   
 ####################################################################
@@ -1642,7 +1642,7 @@ class SingleTemplateEmbedding(hk.Module):
       if self.config.use_template_unit_vector:
         raw_atom_pos = template_batch["template_all_atom_positions"]
         if gc.bfloat16:
-          raw_atom_pos = raw_atom_pos.astype(jnp.float32)
+          raw_atom_pos = raw_atom_pos.astype(jnp.float64)
 
         rot, trans = quat_affine.make_transform_from_reference(
             n_xyz=raw_atom_pos[:, n],
